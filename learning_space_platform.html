@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Space - Bilingual AI Tuition Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans Sinhala -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#EFF6FF',
+                            100: '#DBEAFE',
+                            500: '#3B82F6',
+                            600: '#2563EB',
+                            700: '#1D4ED8',
+                            900: '#1E3A8A'
+                        },
+                        emeraldLight: '#ECFDF5',
+                        slateBg: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Sinhala', 'sans-serif'],
+                        sinhala: ['Noto Sans Sinhala', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans Sinhala', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 antialiased selection:bg-brand-100 selection:text-brand-700">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('hub')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-shapes text-xl"></i>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight text-slate-900">Learning Space</span>
+            </div>
+
+            <!-- View Navigation Tabs -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+                <button onclick="switchView('hub')" id="nav-hub" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-brand-600 shadow-sm">
+                    <i class="fa-solid fa-house mr-1.5 text-xs"></i> <span data-i18n="navLessons">Lessons</span>
+                </button>
+                <button onclick="switchView('player')" id="nav-player" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-play-circle mr-1.5 text-xs"></i> <span data-i18n="navPlayer">Lesson Player</span>
+                </button>
+                <button onclick="switchView('practice')" id="nav-practice" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-file-lines mr-1.5 text-xs"></i> <span data-i18n="navPractice">Past Papers</span>
+                </button>
+                <button onclick="switchView('progress')" id="nav-progress" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-chart-line mr-1.5 text-xs"></i> <span data-i18n="navProgress">My Progress</span>
+                </button>
+            </nav>
+
+            <!-- Search & Actions -->
+            <div class="flex items-center gap-3">
+                <!-- Search Input -->
+                <div class="relative hidden sm:block w-48 lg:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="global-search" placeholder="Search lessons..." data-i18n-placeholder="searchPlaceholder" class="w-full pl-9 pr-4 py-2 bg-slate-100 focus:bg-white text-xs rounded-xl border border-transparent focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all outline-none">
+                </div>
+
+                <!-- Language Switcher -->
+                <div class="flex items-center bg-slate-100 rounded-xl p-1 border border-slate-200 text-xs font-semibold">
+                    <button onclick="setLanguage('en')" id="lang-en" class="px-2.5 py-1.5 rounded-lg transition-all bg-brand-600 text-white shadow-sm">English</button>
+                    <button onclick="setLanguage('si')" id="lang-si" class="px-2.5 py-1.5 rounded-lg transition-all text-slate-600 hover:text-slate-900">සිංහල</button>
+                </div>
+
+                <!-- Action CTA -->
+                <button onclick="switchView('player')" class="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-semibold text-xs rounded-xl shadow-md shadow-brand-500/20 transition-all">
+                    <span data-i18n="startLearning">Start learning</span> <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 space-y-6">
+
+        <!-- ================= VIEW 1: LESSONS HUB / LANDING PAGE ================= -->
+        <section id="view-hub" class="space-y-6 transition-opacity duration-300">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-900 via-brand-700 to-indigo-700 text-white p-8 lg:p-12 shadow-xl">
+                <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emeraldLight text-emerald-700 border border-emerald-200 shadow-sm">
+                        <i class="fa-solid fa-leaf text-xs"></i> <span data-i18n="freePilotBadge">Free pilot access</span>
+                    </span>
+                    <h1 class="text-3xl lg:text-5xl font-extrabold tracking-tight leading-tight" data-i18n="heroTitle">
+                        One lesson. Everything you need to practise.
+                    </h1>
+                    <p class="text-brand-100 text-sm lg:text-base leading-relaxed" data-i18n="heroSub">
+                        Watch an AI video, explore related past paper questions and build confidence with guided practice.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <button onclick="switchView('player')" class="px-6 py-3 bg-white hover:bg-brand-50 text-brand-700 font-bold text-sm rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <span data-i18n="exploreLessons">Explore the lessons</span> <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lessons Grid -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-slate-900" data-i18n="insideEachLesson">Everything inside each lesson</h2>
+                    <span class="text-xs font-semibold text-slate-500" data-i18n="initialPilotInfo">Initial pilot: two lessons</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Lesson Card 01 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all space-y-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md" data-i18n="lesson01Badge">Lesson 01</span>
+                                <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md" data-i18n="pilotLessonTag">Pilot lesson</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-1" data-i18n="l1Title">Foundations</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed" data-i18n="l1Desc">Build a strong foundation with key concepts and guided practice.</p>
+
+                            <div class="mt-4 space-y-2 border-t border-slate-100 pt-4">
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-play-circle text-brand-500"></i> <span data-i18n="featureVideo">AI video lesson</span></span>
+                                    <span class="text-slate-400">Short sections</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-file-lines text-indigo-500"></i> <span data-i18n="featurePast">Related past paper questions</span></span>
+                                    <span class="text-slate-400">12 questions</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-chart-bar text-emerald-500"></i> <span data-i18n="featurePredicted">Predicted practice questions</span></span>
+                                    <span class="text-slate-400">15 questions</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-book-open text-amber-500"></i> <span data-i18n="featureNotes">Revision notes</span></span>
+                                    <span class="text-slate-400">Key summaries</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button onclick="switchView('player')" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1.5">
+                                <span data-i18n="exploreBtn">Explore lesson</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                            <button onclick="switchView('player'); focusAITutor();" class="w-full py-2.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-brand-200">
+                                <i class="fa-solid fa-robot text-brand-500"></i> <span data-i18n="askAITutor">Ask AI tutor</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson Card 02 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all space-y-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md" data-i18n="lesson02Badge">Lesson 02</span>
+                                <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md" data-i18n="pilotLessonTag">Pilot lesson</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-1" data-i18n="l2Title">Build your understanding</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed" data-i18n="l2Desc">Go deeper with more challenging ideas and practical application.</p>
+
+                            <div class="mt-4 space-y-2 border-t border-slate-100 pt-4">
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-play-circle text-brand-500"></i> <span data-i18n="featureVideo">AI video lesson</span></span>
+                                    <span class="text-slate-400">Short sections</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-file-lines text-indigo-500"></i> <span data-i18n="featurePast">Related past paper questions</span></span>
+                                    <span class="text-slate-400">10 questions</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-chart-bar text-emerald-500"></i> <span data-i18n="featurePredicted">Predicted practice questions</span></span>
+                                    <span class="text-slate-400">15 questions</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs py-1 text-slate-600">
+                                    <span class="flex items-center gap-2"><i class="fa-solid fa-book-open text-amber-500"></i> <span data-i18n="featureNotes">Revision notes</span></span>
+                                    <span class="text-slate-400">Key summaries</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button onclick="switchView('player')" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1.5">
+                                <span data-i18n="exploreBtn">Explore lesson</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                            <button onclick="switchView('player'); focusAITutor();" class="w-full py-2.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-brand-200">
+                                <i class="fa-solid fa-robot text-brand-500"></i> <span data-i18n="askAITutor">Ask AI tutor</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Choose how you want to study tabs -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-slate-900" data-i18n="chooseStudyWay">Choose how you want to study</h3>
+                <div class="flex flex-wrap items-center gap-2 border-b border-slate-100 pb-3">
+                    <button class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-lines"></i> <span data-i18n="tabPastPapers">Past papers</span>
+                    </button>
+                    <button onclick="switchView('practice')" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-chart-line"></i> <span data-i18n="tabPredicted">Predicted Practice</span>
+                    </button>
+                    <button onclick="switchView('player')" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-100 flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-book"></i> <span data-i18n="tabRevision">Revision notes</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-bookmark"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900" data-i18n="saveDifficult">Save difficult questions</h4>
+                            <p class="text-[11px] text-slate-500 leading-snug" data-i18n="saveDifficultSub">Bookmark questions and come back to them anytime.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900" data-i18n="revisitMistakes">Revisit mistakes</h4>
+                            <p class="text-[11px] text-slate-500 leading-snug" data-i18n="revisitMistakesSub">Review your incorrect answers and learn from them.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900" data-i18n="trackProgress">Track your progress</h4>
+                            <p class="text-[11px] text-slate-500 leading-snug" data-i18n="trackProgressSub">See what you've completed and focus on what to improve.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW 2: LESSON PLAYER VIEW (SCREENSHOT 1 & 2) ================= -->
+        <section id="view-player" class="hidden space-y-6 transition-opacity duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Sidebar: Outline (3 cols) -->
+                <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-4">
+                    <button onclick="switchView('hub')" class="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1.5 transition-all mb-2">
+                        <i class="fa-solid fa-arrow-left text-[10px]"></i> <span data-i18n="allLessons">All lessons</span>
+                    </button>
+                    <div>
+                        <h2 class="text-lg font-extrabold text-slate-900" data-i18n="playerHeading">Understanding the basics</h2>
+                        <p class="text-xs text-slate-500 mt-1 leading-relaxed" data-i18n="playerSub">A step-by-step introduction with clear explanations and practice.</p>
+                    </div>
+
+                    <!-- Step Navigation -->
+                    <div class="space-y-1.5 pt-2">
+                        <button onclick="selectPlayerStep('intro')" id="step-intro" class="w-full flex items-center gap-3 p-3 rounded-xl text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200 transition-all text-left">
+                            <i class="fa-solid fa-file-text text-brand-600"></i> <span data-i18n="stepIntro">Introduction</span>
+                        </button>
+                        <button onclick="selectPlayerStep('video')" id="step-video" class="w-full flex items-center gap-3 p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all text-left">
+                            <i class="fa-solid fa-circle-play text-slate-400"></i> <span data-i18n="stepVideo">Video lesson</span>
+                        </button>
+                        <button onclick="selectPlayerStep('worked')" id="step-worked" class="w-full flex items-center gap-3 p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-400"></i> <span data-i18n="stepWorked">Worked example</span>
+                        </button>
+                        <button onclick="selectPlayerStep('practice')" id="step-practice" class="w-full flex items-center gap-3 p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all text-left">
+                            <i class="fa-solid fa-chart-column text-slate-400"></i> <span data-i18n="stepPractice">Practice</span>
+                        </button>
+                        <button onclick="selectPlayerStep('check')" id="step-check" class="w-full flex items-center gap-3 p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all text-left">
+                            <i class="fa-solid fa-square-check text-slate-400"></i> <span data-i18n="stepCheck">Independent check</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Center Area: Video & Content Tabs (6 cols) -->
+                <div class="lg:col-span-6 space-y-4">
+                    
+                    <!-- Simulated Video Player Container -->
+                    <div class="relative bg-slate-900 rounded-2xl overflow-hidden shadow-lg aspect-video flex flex-col justify-between p-4 border border-slate-800 group">
+                        <!-- Simulated AI Art Background -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/80 via-slate-900 to-indigo-900/80 flex items-center justify-center opacity-90">
+                            <div class="text-center p-6 space-y-3">
+                                <div class="w-16 h-16 rounded-full bg-brand-600/30 border-2 border-brand-400 flex items-center justify-center text-white mx-auto shadow-inner animate-pulse">
+                                    <i class="fa-solid fa-lightbulb text-2xl text-amber-300"></i>
+                                </div>
+                                <span class="block text-xs font-medium text-slate-300" data-i18n="videoConceptText">Visual Concept Explanation • Step 1</span>
+                            </div>
+                        </div>
+
+                        <!-- Top overlay details -->
+                        <div class="relative z-10 flex items-center justify-between text-xs text-white/80">
+                            <span class="bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-md font-medium" data-i18n="videoTag">AI Video Section</span>
+                            <span class="bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-md font-mono">1080p HD</span>
+                        </div>
+
+                        <!-- Center Play Button -->
+                        <div class="relative z-10 flex items-center justify-center">
+                            <button onclick="toggleVideoPlay()" id="btn-video-play" class="w-14 h-14 rounded-full bg-brand-600 hover:bg-brand-500 text-white flex items-center justify-center text-xl shadow-lg transition-all scale-100 active:scale-95">
+                                <i class="fa-solid fa-play ml-1" id="icon-video-play"></i>
+                            </button>
+                        </div>
+
+                        <!-- Bottom Video Bar Controls -->
+                        <div class="relative z-10 bg-slate-950/80 backdrop-blur-md rounded-xl p-2.5 flex flex-col gap-1.5 text-white text-xs border border-white/10">
+                            <!-- Progress Bar Slider -->
+                            <input type="range" id="video-scrubber" min="0" max="100" value="35" oninput="updateScrubber(this.value)" class="w-full accent-brand-500 h-1 bg-slate-700 rounded-lg cursor-pointer">
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <button onclick="toggleVideoPlay()"><i class="fa-solid fa-play" id="icon-mini-play"></i></button>
+                                    <span class="font-mono text-[11px] text-slate-300" id="video-timer">1:30 / 4:28</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-slate-300">
+                                    <button class="hover:text-white"><i class="fa-solid fa-closed-captioning"></i></button>
+                                    <button class="hover:text-white"><i class="fa-solid fa-gear"></i></button>
+                                    <button class="hover:text-white"><i class="fa-solid fa-expand"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Under-Video Tabs (Notes, Practice, Past Papers) -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                            <button onclick="switchPlayerTab('notes')" id="ptab-notes" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-book"></i> <span data-i18n="tabNotes">Notes</span>
+                            </button>
+                            <button onclick="switchPlayerTab('practice')" id="ptab-practice" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-chart-line"></i> <span data-i18n="tabPractice">Practice questions</span>
+                            </button>
+                            <button onclick="switchPlayerTab('past')" id="ptab-past" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-lines"></i> <span data-i18n="tabPast">Related past papers</span>
+                            </button>
+                        </div>
+
+                        <!-- Tab Content: Notes -->
+                        <div id="pcontent-notes" class="space-y-3">
+                            <h4 class="text-sm font-bold text-slate-900" data-i18n="notesKeyPoints">Key points from this lesson</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed" data-i18n="notesSub">Short notes to help you remember the important ideas.</p>
+                            <ul class="space-y-2 text-xs text-slate-700 list-disc list-inside bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <li data-i18n="n1">The main concept and why it matters in exams.</li>
+                                <li data-i18n="n2">Key terms and simple step-by-step explanations.</li>
+                                <li data-i18n="n3">A structured summary for fast revision.</li>
+                                <li data-i18n="n4">Common student mistakes to avoid during solving.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Tab Content: Practice Questions -->
+                        <div id="pcontent-practice" class="hidden space-y-3">
+                            <h4 class="text-sm font-bold text-slate-900" data-i18n="practiceTabHeading">Quick Check Question</h4>
+                            <p class="text-xs text-slate-600" data-i18n="q1Prompt">If we start with 2 items and add 1 more, how many items do we have?</p>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="q1-input" placeholder="Type answer..." class="px-3 py-2 border border-slate-200 rounded-xl text-xs w-40 focus:outline-none focus:border-brand-500">
+                                <button onclick="checkQuickAnswer()" class="px-4 py-2 bg-brand-600 text-white font-bold text-xs rounded-xl hover:bg-brand-700" data-i18n="checkAnswer">Check</button>
+                            </div>
+                            <div id="q1-feedback" class="hidden text-xs p-2.5 rounded-xl font-medium"></div>
+                        </div>
+
+                        <!-- Tab Content: Past Papers -->
+                        <div id="pcontent-past" class="hidden space-y-2">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs flex justify-between items-center">
+                                <div>
+                                    <span class="font-bold text-slate-900">2024 MCQ - Question 05</span>
+                                    <p class="text-slate-500 text-[11px]" data-i18n="pastQSub">Core concept application</p>
+                                </div>
+                                <button onclick="switchView('practice')" class="px-3 py-1.5 bg-brand-100 text-brand-700 rounded-lg font-bold text-[11px]" data-i18n="tryQuestion">Try question</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar: Interactive AI Tutor Panel (3 cols) -->
+                <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col h-[520px]">
+                    <!-- Header -->
+                    <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                        <div class="w-9 h-9 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900" data-i18n="aiTutorTitle">AI tutor</h3>
+                            <p class="text-[11px] text-slate-500" data-i18n="aiTutorSub">Get instant help and clearer explanations whenever you need it.</p>
+                        </div>
+                    </div>
+
+                    <!-- Chat Messages Area -->
+                    <div id="ai-chat-box" class="flex-1 overflow-y-auto custom-scrollbar my-3 space-y-3 pr-1 text-xs">
+                        <!-- User Msg -->
+                        <div class="flex justify-end">
+                            <div class="bg-brand-50 text-brand-900 border border-brand-100 rounded-2xl rounded-tr-none px-3 py-2 max-w-[85%]" data-i18n="aiUserMsg1">
+                                Can you explain simply?
+                            </div>
+                        </div>
+
+                        <!-- AI Msg -->
+                        <div class="flex gap-2 items-start">
+                            <div class="w-6 h-6 rounded-lg bg-brand-600 text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none px-3 py-2 max-w-[85%] space-y-2">
+                                <p data-i18n="aiBotMsg1">Of course! Here's a simple example:</p>
+                                <div class="bg-white p-2 rounded-xl border border-slate-200 text-center font-bold text-slate-700">
+                                    <span class="text-brand-600">● ●</span> + <span class="text-emerald-500">●</span> → <span class="text-brand-600">● ●</span><span class="text-emerald-500">●</span>
+                                </div>
+                                <p data-i18n="aiBotMsg1Sub">If we start with 2 items and add 1 more, we get 3 items. This shows the basic idea in a simple way.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Bar -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <form onsubmit="sendAIMessage(event)" class="relative flex items-center">
+                            <input type="text" id="ai-input" placeholder="Ask your question here..." data-i18n-placeholder="aiInputPlaceholder" class="w-full pl-3 pr-10 py-2.5 text-xs bg-slate-100 focus:bg-white rounded-xl border border-slate-200 focus:border-brand-500 focus:outline-none">
+                            <button type="submit" class="absolute right-1.5 w-7 h-7 bg-brand-600 hover:bg-brand-700 text-white rounded-lg flex items-center justify-center text-xs transition-all">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= VIEW 3: PAST PAPERS & PREDICTED PRACTICE (SCREENSHOT 3 & 5) ================= -->
+        <section id="view-practice" class="hidden space-y-6 transition-opacity duration-300">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Filters Sidebar (3 cols) -->
+                <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-5">
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" data-i18n="filterYear">Filter by year</h3>
+                        <div class="space-y-1">
+                            <button onclick="filterYear('all')" id="fyear-all" class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-sm" data-i18n="allYears">All years</button>
+                            <button onclick="filterYear('2024')" id="fyear-2024" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">2024</button>
+                            <button onclick="filterYear('2023')" id="fyear-2023" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">2023</button>
+                            <button onclick="filterYear('2022')" id="fyear-2022" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">2022</button>
+                            <button onclick="filterYear('2021')" id="fyear-2021" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">2021</button>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2" data-i18n="filterType">Filter by question type</h3>
+                        <div class="space-y-1">
+                            <button class="w-full text-left px-3 py-2 rounded-xl text-xs font-bold bg-brand-50 text-brand-700 border border-brand-100" data-i18n="allTypes">All types</button>
+                            <button class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100" data-i18n="mcqType">Multiple choice (MCQ)</button>
+                            <button class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100" data-i18n="structuredType">Structured</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Area (9 cols) -->
+                <div class="lg:col-span-9 space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-slate-900" data-i18n="pastPaperHeading">Past paper questions for this lesson</h2>
+                        <p class="text-xs text-slate-500 mt-1" data-i18n="pastPaperSub">Explore official past paper questions from previous years, with worked discussions and guided practice.</p>
+                    </div>
+
+                    <!-- Layout info badge -->
+                    <div class="p-3 bg-brand-50 border border-brand-100 rounded-xl text-xs text-brand-800 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-brand-600"></i>
+                        <span data-i18n="layoutPreviewNotice">Layout preview. Official questions and references will be added after academic review.</span>
+                    </div>
+
+                    <!-- Interactive Practice Box (Screenshot 5 Style) -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 class="text-sm font-extrabold text-slate-900" data-i18n="practicePreviewTitle">Practice question preview</h3>
+                            <span class="text-xs text-slate-400 font-mono">Question 1 of 5</span>
+                        </div>
+
+                        <!-- Question Body -->
+                        <p class="text-xs text-slate-700 leading-relaxed font-medium" data-i18n="pQBody">
+                            An initial reaction mixture contains 2 moles of reactant A. If 1 mole of reactant B is added and completely reacts, how many total product units are formed assuming 1:1 stoichiometry?
+                        </p>
+
+                        <!-- Answer Input & Actions -->
+                        <div class="space-y-3 pt-2">
+                            <input type="text" id="practice-input" placeholder="Type your answer here..." data-i18n-placeholder="typeAnswerPlaceholder" class="w-full px-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-brand-500 focus:outline-none">
+                            
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button onclick="checkPracticeAnswer()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
+                                    <i class="fa-solid fa-check-circle"></i> <span data-i18n="btnCheckAnswer">Check answer</span>
+                                </button>
+                                <button onclick="toggleHint()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5">
+                                    <i class="fa-solid fa-lightbulb text-amber-500"></i> <span data-i18n="btnGetHint">Get a hint</span>
+                                </button>
+                                <button onclick="toggleExplanation()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5">
+                                    <i class="fa-solid fa-book-open text-brand-500"></i> <span data-i18n="btnViewExplanation">View explanation</span>
+                                </button>
+                            </div>
+
+                            <!-- Dynamic Hint/Explanation Display -->
+                            <div id="hint-box" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
+                                <strong data-i18n="hintTitle">Hint:</strong> <span data-i18n="hintBody">Recall that 1 mole of A reacts with 1 mole of B to form products directly.</span>
+                            </div>
+                            <div id="explanation-box" class="hidden p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900">
+                                <strong data-i18n="expTitle">Explanation:</strong> <span data-i18n="expBody">1 mole A + 1 mole B = 2 total product units formed in a completed 1:1 reaction.</span>
+                            </div>
+                            <div id="practice-feedback" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+                        </div>
+                    </div>
+
+                    <!-- Questions Accordion List -->
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center text-sm font-bold">
+                                    <i class="fa-solid fa-file-text"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900" data-i18n="q2024Title">2024 Examination MCQ Set</h4>
+                                    <p class="text-[11px] text-slate-400">3 questions available</p>
+                                </div>
+                            </div>
+                            <button onclick="switchView('player')" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-xl text-xs font-bold transition-all" data-i18n="btnTryQuestion">Try question</button>
+                        </div>
+
+                        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                                    <i class="fa-solid fa-file-text"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900" data-i18n="q2023Title">2023 Examination Structured Set</h4>
+                                    <p class="text-[11px] text-slate-400">3 questions available</p>
+                                </div>
+                            </div>
+                            <button onclick="switchView('player')" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-xl text-xs font-bold transition-all" data-i18n="btnTryQuestion">Try question</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= VIEW 4: MY PROGRESS DASHBOARD (SCREENSHOT 5) ================= -->
+        <section id="view-progress" class="hidden space-y-6 transition-opacity duration-300">
+            <div>
+                <h2 class="text-2xl font-extrabold text-slate-900" data-i18n="progressTitle">Your learning journey</h2>
+                <p class="text-xs text-slate-500 mt-1" data-i18n="progressSub">Keep practising, explore new lessons and build your confidence step by step.</p>
+            </div>
+
+            <!-- Metric Stat Cards Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="w-9 h-9 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500 block" data-i18n="statCompleted">Completed sections</span>
+                    <span class="text-2xl font-extrabold text-slate-900 block">2 / 10</span>
+                    <span class="text-[10px] text-slate-400 block" data-i18n="statCompletedSub">across all started lessons</span>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-chart-column"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500 block" data-i18n="statAttempted">Questions attempted</span>
+                    <span class="text-2xl font-extrabold text-slate-900 block">8 / 40</span>
+                    <span class="text-[10px] text-slate-400 block" data-i18n="statAttemptedSub">practice questions</span>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500 block" data-i18n="statRevisit">Questions to revisit</span>
+                    <span class="text-2xl font-extrabold text-slate-900 block">3</span>
+                    <span class="text-[10px] text-slate-400 block" data-i18n="statRevisitSub">from your practice</span>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-square-check"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500 block" data-i18n="statCheck">Independent check</span>
+                    <span class="text-base font-bold text-slate-700 block" data-i18n="statNotStarted">Not started</span>
+                    <span class="text-[10px] text-slate-400 block" data-i18n="statCheckSub">Final self test for each lesson</span>
+                </div>
+            </div>
+
+            <!-- Active Learning & Notebook Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Continue Learning -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-slate-900" data-i18n="headingContinue">Continue learning</h3>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
+                        <span class="text-[11px] font-bold text-brand-600 uppercase tracking-wider block">Lesson 01</span>
+                        <h4 class="text-sm font-extrabold text-slate-900" data-i18n="l1Title">Foundations</h4>
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div class="bg-brand-600 h-full w-2/5"></div>
+                        </div>
+                        <span class="text-[11px] text-slate-500 block">2 / 5 sections completed</span>
+                        <button onclick="switchView('player')" class="w-full py-2 bg-brand-600 text-white rounded-xl text-xs font-bold hover:bg-brand-700 transition-all" data-i18n="btnGoToLesson">Go to lesson →</button>
+                    </div>
+                </div>
+
+                <!-- Next Practice -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-slate-900" data-i18n="headingNextPractice">Next practice</h3>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3 text-center">
+                        <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-lg mx-auto">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h4 class="text-xs font-bold text-slate-900" data-i18n="practiceQuestionsTitle">Practice questions</h4>
+                        <p class="text-[11px] text-slate-500" data-i18n="nextPracticeSub">Try more questions from Lesson 01: Foundations.</p>
+                        <button onclick="switchView('practice')" class="w-full py-2 bg-brand-50 text-brand-700 rounded-xl text-xs font-bold border border-brand-200 hover:bg-brand-100 transition-all" data-i18n="btnStartPractising">Start practising →</button>
+                    </div>
+                </div>
+
+                <!-- Mistake Notebook -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-sm font-bold text-slate-900" data-i18n="headingMistakeNotebook">Your mistake notebook</h3>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3 text-center">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg mx-auto">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <h4 class="text-xs font-bold text-slate-900" data-i18n="mistakesCount">3 questions to revisit</h4>
+                        <p class="text-[11px] text-slate-500" data-i18n="mistakesSub">Review questions you got incorrect and learn from them.</p>
+                        <button onclick="switchView('practice')" class="w-full py-2 bg-brand-50 text-brand-700 rounded-xl text-xs font-bold border border-brand-200 hover:bg-brand-100 transition-all" data-i18n="btnViewQuestions">View questions →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto bg-white border-t border-slate-200 py-6 px-4 lg:px-8 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-brand-600 text-white flex items-center justify-center text-xs font-bold">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <span class="font-bold text-slate-800">Learning Space</span>
+                <span class="text-slate-400">| Concept preview • Initial pilot: two lessons</span>
+            </div>
+            <div class="flex items-center gap-4 text-slate-400">
+                <a href="#" class="hover:text-slate-600">About</a>
+                <a href="#" class="hover:text-slate-600">Help</a>
+                <a href="#" class="hover:text-slate-600">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT ENGINE -->
+    <script>
+        // Internationalization Dictionary (i18n)
+        const i18n = {
+            en: {
+                navLessons: "Lessons",
+                navPlayer: "Lesson Player",
+                navPractice: "Past Papers",
+                navProgress: "My Progress",
+                startLearning: "Start learning",
+                searchPlaceholder: "Search lessons...",
+                freePilotBadge: "Free pilot access",
+                heroTitle: "One lesson. Everything you need to practise.",
+                heroSub: "Watch an AI video, explore related past paper questions and build confidence with guided practice.",
+                exploreLessons: "Explore the lessons",
+                insideEachLesson: "Everything inside each lesson",
+                initialPilotInfo: "Initial pilot: two lessons",
+                lesson01Badge: "Lesson 01",
+                lesson02Badge: "Lesson 02",
+                pilotLessonTag: "Pilot lesson",
+                l1Title: "Foundations",
+                l1Desc: "Build a strong foundation with key concepts and guided practice.",
+                l2Title: "Build your understanding",
+                l2Desc: "Go deeper with more challenging ideas and practical application.",
+                featureVideo: "AI video lesson",
+                featurePast: "Related past paper questions",
+                featurePredicted: "Predicted practice questions",
+                featureNotes: "Revision notes",
+                exploreBtn: "Explore lesson",
+                askAITutor: "Ask AI tutor",
+                chooseStudyWay: "Choose how you want to study",
+                tabPastPapers: "Past papers",
+                tabPredicted: "Predicted Practice",
+                tabRevision: "Revision notes",
+                saveDifficult: "Save difficult questions",
+                saveDifficultSub: "Bookmark questions and come back to them anytime.",
+                revisitMistakes: "Revisit mistakes",
+                revisitMistakesSub: "Review your incorrect answers and learn from them.",
+                trackProgress: "Track your progress",
+                trackProgressSub: "See what you've completed and focus on what to improve.",
+                allLessons: "All lessons",
+                playerHeading: "Understanding the basics",
+                playerSub: "A step-by-step introduction with clear explanations and practice.",
+                stepIntro: "Introduction",
+                stepVideo: "Video lesson",
+                stepWorked: "Worked example",
+                stepPractice: "Practice",
+                stepCheck: "Independent check",
+                videoTag: "AI Video Section",
+                videoConceptText: "Visual Concept Explanation • Step 1",
+                tabNotes: "Notes",
+                tabPractice: "Practice questions",
+                tabPast: "Related past papers",
+                notesKeyPoints: "Key points from this lesson",
+                notesSub: "Short notes to help you remember the important ideas.",
+                n1: "The main concept and why it matters in exams.",
+                n2: "Key terms and simple step-by-step explanations.",
+                n3: "A structured summary for fast revision.",
+                n4: "Common student mistakes to avoid during solving.",
+                practiceTabHeading: "Quick Check Question",
+                q1Prompt: "If we start with 2 items and add 1 more, how many items do we have?",
+                checkAnswer: "Check",
+                pastQSub: "Core concept application",
+                tryQuestion: "Try question",
+                aiTutorTitle: "AI tutor",
+                aiTutorSub: "Get instant help and clearer explanations whenever you need it.",
+                aiUserMsg1: "Can you explain simply?",
+                aiBotMsg1: "Of course! Here's a simple example:",
+                aiBotMsg1Sub: "If we start with 2 items and add 1 more, we get 3 items. This shows the basic idea in a simple way.",
+                aiInputPlaceholder: "Ask your question here...",
+                filterYear: "Filter by year",
+                allYears: "All years",
+                filterType: "Filter by question type",
+                allTypes: "All types",
+                mcqType: "Multiple choice (MCQ)",
+                structuredType: "Structured",
+                pastPaperHeading: "Past paper questions for this lesson",
+                pastPaperSub: "Explore official past paper questions from previous years, with worked discussions and guided practice.",
+                layoutPreviewNotice: "Layout preview. Official questions and references will be added after academic review.",
+                practicePreviewTitle: "Practice question preview",
+                pQBody: "An initial reaction mixture contains 2 moles of reactant A. If 1 mole of reactant B is added and completely reacts, how many total product units are formed assuming 1:1 stoichiometry?",
+                typeAnswerPlaceholder: "Type your answer here...",
+                btnCheckAnswer: "Check answer",
+                btnGetHint: "Get a hint",
+                btnViewExplanation: "View explanation",
+                hintTitle: "Hint:",
+                hintBody: "Recall that 1 mole of A reacts with 1 mole of B to form products directly.",
+                expTitle: "Explanation:",
+                expBody: "1 mole A + 1 mole B = 2 total product units formed in a completed 1:1 reaction.",
+                q2024Title: "2024 Examination MCQ Set",
+                q2023Title: "2023 Examination Structured Set",
+                btnTryQuestion: "Try question",
+                progressTitle: "Your learning journey",
+                progressSub: "Keep practising, explore new lessons and build your confidence step by step.",
+                statCompleted: "Completed sections",
+                statCompletedSub: "across all started lessons",
+                statAttempted: "Questions attempted",
+                statAttemptedSub: "practice questions",
+                statRevisit: "Questions to revisit",
+                statRevisitSub: "from your practice",
+                statCheck: "Independent check",
+                statNotStarted: "Not started",
+                statCheckSub: "Final self test for each lesson",
+                headingContinue: "Continue learning",
+                headingNextPractice: "Next practice",
+                practiceQuestionsTitle: "Practice questions",
+                nextPracticeSub: "Try more questions from Lesson 01: Foundations.",
+                btnStartPractising: "Start practising →",
+                headingMistakeNotebook: "Your mistake notebook",
+                mistakesCount: "3 questions to revisit",
+                mistakesSub: "Review questions you got incorrect and learn from them.",
+                btnViewQuestions: "View questions →",
+                btnGoToLesson: "Go to lesson →"
+            },
+            si: {
+                navLessons: "පාඩම්",
+                navPlayer: "පාඩම් ප්ලේයරය",
+                navPractice: "පසුගිය ප්‍රශ්න",
+                navProgress: "මගේ ප්‍රගතිය",
+                startLearning: "ඉගෙනුම අරඹන්න",
+                searchPlaceholder: "පාඩම් සොයන්න...",
+                freePilotBadge: "නොමිලේ අත්හදා බලන්න",
+                heroTitle: "එක් පාඩමක් සමග සම්පූර්ණ පුහුණුවක්.",
+                heroSub: "AI වීඩියෝ, පසුගිය විභාග ප්‍රශ්න සහ විසඳුම් සමග උසස් පෙළට සූදානම් වෙමු.",
+                exploreLessons: "පාඩම් බලන්න",
+                insideEachLesson: "සෑම පාඩමකටම ඇතුළත් දේ",
+                initialPilotInfo: "මුල් පයිලට්: පාඩම් දෙකක්",
+                lesson01Badge: "පාඩම 01",
+                lesson02Badge: "පාඩම 02",
+                pilotLessonTag: "පරීක්ෂණ පාඩම",
+                l1Title: "මූලික සංකල්ප",
+                l1Desc: "වැදගත් කරුණු මත පදනම් වූ සම්පූර්ණ පුහුණුවක්.",
+                l2Title: "දැනුම වැඩි කරගනිමු",
+                l2Desc: "අභියෝග සහ පුහුණුවෙන් ඔබේ දැනුම තවත් පුළුල් කරන්න.",
+                featureVideo: "AI වීඩියෝ පාඩම",
+                featurePast: "අදාළ පසුගිය විභාග ප්‍රශ්න",
+                featurePredicted: "අනුමාන ප්‍රශ්න සහ පුහුණුව",
+                featureNotes: "කෙටි පුනරීක්ෂණ සටහන්",
+                exploreBtn: "පාඩම් බලන්න",
+                askAITutor: "AI සහායකයෙන් අසන්න",
+                chooseStudyWay: "ඔබට අවශ්‍ය කොටස තෝරන්න",
+                tabPastPapers: "පසුගිය ප්‍රශ්න",
+                tabPredicted: "අනුමාන ප්‍රශ්න",
+                tabRevision: "සටහන්",
+                saveDifficult: "අපහසු ප්‍රශ්න සුරකින්න",
+                saveDifficultSub: "නැවත බැලීමට අපහසු ප්‍රශ්න සුරක්ෂිතව සලකුණු කරන්න.",
+                revisitMistakes: "වැරදි නැවත පුහුණු වන්න",
+                revisitMistakesSub: "වැරදි ගිය ප්‍රශ්න නැවත බලමින් ඔබේ දැනුම ශක්තිමත් කරන්න.",
+                trackProgress: "ඔබේ ප්‍රගතිය බලන්න",
+                trackProgressSub: "ඔබ ඉගෙනුම ලබන ආකාරය පැහැදිලිව නිරීක්ෂණය කරන්න.",
+                allLessons: "සියලු පාඩම්",
+                playerHeading: "මූලික සංකල්ප තේරුම් ගනිමු",
+                playerSub: "පියවරෙන් පියවර පැහැදිලි කරන හඳුන්වීමක් සහ අභ්‍යාස.",
+                stepIntro: "හැඳින්වීම",
+                stepVideo: "වීඩියෝ පාඩම",
+                stepWorked: "විසඳු උදාහරණ",
+                stepPractice: "අභ්‍යාස",
+                stepCheck: "අවසාන පරික්ෂණය",
+                videoTag: "AI වීඩියෝ කොටස",
+                videoConceptText: "දෘශ්‍ය සංකල්ප පැහැදිලි කිරීම • පියවර 1",
+                tabNotes: "සටහන්",
+                tabPractice: "අභ්‍යාස ප්‍රශ්න",
+                tabPast: "පසුගිය ප්‍රශ්න",
+                notesKeyPoints: "මෙම පාඩමේ විශේෂ කරුණු",
+                notesSub: "මතක තබා ගැනීමට වැදගත් අදහස් පිළිබඳ කෙටි සටහන්.",
+                n1: "ප්‍රධාන සංකල්පය සහ එය වැදගත් වන්නේ ඇයි.",
+                n2: "ප්‍රධාන යෙදුම් සහ සරල පැහැදිලි කිරීම්.",
+                n3: "පියවරෙන් පියවර සාරාංශය.",
+                n4: "සාමාන්‍ය වැරදි මඟහැරගැනීම.",
+                practiceTabHeading: "ක්ෂණික පරීක්ෂණය",
+                q1Prompt: "අප ආරම්භයේ දී අයිතම 2 ක් තිබී තව 1 ක් එක් කළහොත්, අපට අයිතම කීයක් ලැබේද?",
+                checkAnswer: "පරීක්ෂා කරන්න",
+                pastQSub: "ප්‍රධාන සංකල්ප යෙදීම",
+                tryQuestion: "පිළිතුරු දෙන්න",
+                aiTutorTitle: "AI ඉගෙනුම් සහායකයා",
+                aiTutorSub: "ඔබට අවශ්‍ය විටක ක්ෂණික පිළිතුරු සහ පැහැදිලි කිරීම් ලබා ගන්න.",
+                aiUserMsg1: "තව සරලව පැහැදිලි කරන්න",
+                aiBotMsg1: "හරි, අපි උදාහරණයක් බලමු:",
+                aiBotMsg1Sub: "අප ආරම්භයේ දී අයිතම 2 ක් තිබී තව 1 ක් එක් කළහොත්, අපට අයිතම 3 ක් ලැබෙයි. මෙය මූලික සංකල්පය සරලව පෙන්වයි.",
+                aiInputPlaceholder: "ඔබේ ප්‍රශ්නය මෙහි ලියන්න...",
+                filterYear: "වර්ෂය අනුව පෙරන්න",
+                allYears: "සියලු වර්ෂ",
+                filterType: "ප්‍රශ්න වර්ගය අනුව පෙරන්න",
+                allTypes: "සියලු වර්ග",
+                mcqType: "බහුවරණ (MCQ)",
+                structuredType: "ව්‍යුහගත",
+                pastPaperHeading: "මෙම පාඩමට අදාළ පසුගිය විභාග ප්‍රශ්න",
+                pastPaperSub: "පසුගිය වර්ෂවල නිල විභාග ප්‍රශ්න සොයා බලන්න, විසඳුම් සමග සහ මඟපෙන්වීම් අධ්‍යයනය කරන්න.",
+                layoutPreviewNotice: "ආදර්ශ සැලසුමකි. නිල ප්‍රශ්න සමාලෝචනයෙන් පසු එක් කරනු ඇත.",
+                practicePreviewTitle: "ප්‍රශ්න ආදර්ශය",
+                pQBody: "ප්‍රතික්‍රියක A මවුල 2 ක් අඩංගු මිශ්‍රණයකට B මවුල 1 ක් එක් කර සම්පූර්ණයෙන් ප්‍රතික්‍රියා කළහොත්, 1:1 අනුපාතය යටතේ සෑදෙන මුළු ඵල ප්‍රමාණය කොපමණද?",
+                typeAnswerPlaceholder: "ඔබේ පිළිතුර මෙහි ලියන්න...",
+                btnCheckAnswer: "පිළිතුර පරීක්ෂා කරන්න",
+                btnGetHint: "ඉඟියක් ලබාගන්න",
+                btnViewExplanation: "විසඳුම බලන්න",
+                hintTitle: "ඉඟිය:",
+                hintBody: "A මවුල 1ක් B මවුල 1ක් සමඟ කෙලින්ම ප්‍රතික්‍රියා කරන බව මතක තබා ගන්න.",
+                expTitle: "විසඳුම:",
+                expBody: "1 මවුල A + 1 මවුල B = සම්පූර්ණ වූ 1:1 ප්‍රතික්‍රියාවේදී ඵල ඒකක 2ක් සෑදේ.",
+                q2024Title: "2024 විභාග MCQ ප්‍රශ්න මාලාව",
+                q2023Title: "2023 විභාග ව්‍යුහගත ප්‍රශ්න මාලාව",
+                btnTryQuestion: "පිළිතුරු දෙන්න",
+                progressTitle: "ඔබේ ඉගෙනුම් ගමන",
+                progressSub: "සියවරෙන් සියවර පුහුණු වෙමින්, නව පාඩම් ගවේෂණය කර ඔබේ විශ්වාසය ගොඩනගාගන්න.",
+                statCompleted: "අවසන් කළ කොටස්",
+                statCompletedSub: "සියලුම ඇරඹි පාඩම් වලින්",
+                statAttempted: "උත්සාහ කළ ප්‍රශ්න",
+                statAttemptedSub: "පුහුණු ප්‍රශ්න",
+                statRevisit: "නැවත පුහුණු වෙමු",
+                statRevisitSub: "ඔබගේ පුහුණුවෙන්",
+                statCheck: "අවසාන පරීක්ෂණය",
+                statNotStarted: "තවම අරඹා නැත",
+                statCheckSub: "එක් එක් පාඩම සඳහා පරීක්ෂණ",
+                headingContinue: "පාඩම දිගටම ඉගෙන ගන්න",
+                headingNextPractice: "ඊළඟ පුහුණුව",
+                practiceQuestionsTitle: "පුහුණු ප්‍රශ්න",
+                nextPracticeSub: "මූලික සංකල්ප වලින් තවත් ප්‍රශ්න උත්සාහ කරන්න.",
+                btnStartPractising: "පුහුණුව ආරම්භ කරන්න →",
+                headingMistakeNotebook: "ඔබේ වැරදි සටහන් පොත",
+                mistakesCount: "නැවත බලන ප්‍රශ්න 3ක්",
+                mistakesSub: "තිබුණු ප්‍රශ්න නැවත විමසා ඉගෙන ගන්න.",
+                btnViewQuestions: "ප්‍රශ්න වෙතට →",
+                btnGoToLesson: "පාඩමට යන්න →"
+            }
+        };
+
+        let currentLang = 'en';
+
+        // Language Switcher Function
+        function setLanguage(lang) {
+            currentLang = lang;
+            
+            // Toggle Active Switcher Buttons
+            document.getElementById('lang-en').className = lang === 'en' ? 
+                'px-2.5 py-1.5 rounded-lg transition-all bg-brand-600 text-white shadow-sm' : 
+                'px-2.5 py-1.5 rounded-lg transition-all text-slate-600 hover:text-slate-900';
+            
+            document.getElementById('lang-si').className = lang === 'si' ? 
+                'px-2.5 py-1.5 rounded-lg transition-all bg-brand-600 text-white shadow-sm' : 
+                'px-2.5 py-1.5 rounded-lg transition-all text-slate-600 hover:text-slate-900';
+
+            // Apply text translations to all tagged DOM elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    el.innerText = i18n[lang][key];
+                }
+            });
+
+            // Translate placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (i18n[lang][key]) {
+                    el.placeholder = i18n[lang][key];
+                }
+            });
+        }
+
+        // Navigation View Switcher
+        function switchView(viewName) {
+            const views = ['hub', 'player', 'practice', 'progress'];
+            views.forEach(v => {
+                const el = document.getElementById('view-' + v);
+                const navBtn = document.getElementById('nav-' + v);
+                if (v === viewName) {
+                    el.classList.remove('hidden');
+                    if (navBtn) navBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-brand-600 shadow-sm";
+                } else {
+                    el.classList.add('hidden');
+                    if (navBtn) navBtn.className = "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900";
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Lesson Player Step Selector
+        function selectPlayerStep(stepKey) {
+            const steps = ['intro', 'video', 'worked', 'practice', 'check'];
+            steps.forEach(s => {
+                const btn = document.getElementById('step-' + s);
+                if (s === stepKey) {
+                    btn.className = "w-full flex items-center gap-3 p-3 rounded-xl text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200 transition-all text-left";
+                } else {
+                    btn.className = "w-full flex items-center gap-3 p-3 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all text-left";
+                }
+            });
+        }
+
+        // Under-Video Tabs Selector
+        function switchPlayerTab(tabKey) {
+            const tabs = ['notes', 'practice', 'past'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('ptab-' + t);
+                const content = document.getElementById('pcontent-' + t);
+                if (t === tabKey) {
+                    btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200 transition-all flex items-center gap-1.5";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all flex items-center gap-1.5";
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        // Video Player Simulations
+        let isPlaying = false;
+        function toggleVideoPlay() {
+            isPlaying = !isPlaying;
+            const iconMain = document.getElementById('icon-video-play');
+            const iconMini = document.getElementById('icon-mini-play');
+            if (isPlaying) {
+                iconMain.className = "fa-solid fa-pause ml-0";
+                iconMini.className = "fa-solid fa-pause";
+            } else {
+                iconMain.className = "fa-solid fa-play ml-1";
+                iconMini.className = "fa-solid fa-play";
+            }
+        }
+
+        function updateScrubber(val) {
+            const totalSec = 268; // 4:28
+            const currentSec = Math.floor((val / 100) * totalSec);
+            const mins = Math.floor(currentSec / 60);
+            const secs = currentSec % 60;
+            const formatted = `${mins}:${secs < 10 ? '0' : ''}${secs} / 4:28`;
+            document.getElementById('video-timer').innerText = formatted;
+        }
+
+        // Quick Check Answer Verifier
+        function checkQuickAnswer() {
+            const val = document.getElementById('q1-input').value.trim();
+            const feedback = document.getElementById('q1-feedback');
+            feedback.classList.remove('hidden');
+            if (val === "3" || val.toLowerCase() === "three" || val === "තුන") {
+                feedback.className = "text-xs p-2.5 rounded-xl font-medium bg-emerald-50 text-emerald-800 border border-emerald-200";
+                feedback.innerText = currentLang === 'en' ? "✓ Correct! 2 + 1 = 3 items." : "✓ නිවැරදියි! 2 + 1 = 3 කි.";
+            } else {
+                feedback.className = "text-xs p-2.5 rounded-xl font-medium bg-rose-50 text-rose-800 border border-rose-200";
+                feedback.innerText = currentLang === 'en' ? "✕ Try again. Hint: 2 + 1 = ?" : "✕ නැවත උත්සාහ කරන්න. 2 + 1 = ?";
+            }
+        }
+
+        // Interactive AI Chatbot Engine
+        function focusAITutor() {
+            document.getElementById('ai-input').focus();
+        }
+
+        function sendAIMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('ai-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatBox = document.getElementById('ai-chat-box');
+
+            // Append User Message
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = "flex justify-end";
+            userMsgDiv.innerHTML = `<div class="bg-brand-50 text-brand-900 border border-brand-100 rounded-2xl rounded-tr-none px-3 py-2 max-w-[85%]">${escapeHtml(text)}</div>`;
+            chatBox.appendChild(userMsgDiv);
+
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Generate AI Answer Simulation
+            setTimeout(() => {
+                const aiMsgDiv = document.createElement('div');
+                aiMsgDiv.className = "flex gap-2 items-start";
+                
+                let responseText = currentLang === 'en' ? 
+                    `Great question about "${text}". In this lesson, remember that core principles build step by step. Try attempting practice question 1 to test this concept!` :
+                    `"${text}" පිළිබඳ හොඳ ප්‍රශ්නයක්. මෙම පාඩමේදී පියවරෙන් පියවර සංකල්ප ගොඩනැගෙන බව මතක තබා ගන්න!`;
+
+                aiMsgDiv.innerHTML = `
+                    <div class="w-6 h-6 rounded-lg bg-brand-600 text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-slate-100 text-slate-800 rounded-2xl rounded-tl-none px-3 py-2 max-w-[85%] space-y-1">
+                        <p>${responseText}</p>
+                    </div>
+                `;
+                chatBox.appendChild(aiMsgDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 600);
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Practice View Tools
+        function filterYear(year) {
+            const years = ['all', '2024', '2023', '2022', '2021'];
+            years.forEach(y => {
+                const btn = document.getElementById('fyear-' + y);
+                if (btn) {
+                    if (y === year) {
+                        btn.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-sm";
+                    } else {
+                        btn.className = "w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100";
+                    }
+                }
+            });
+        }
+
+        function toggleHint() {
+            const h = document.getElementById('hint-box');
+            h.classList.toggle('hidden');
+        }
+
+        function toggleExplanation() {
+            const exp = document.getElementById('explanation-box');
+            exp.classList.toggle('hidden');
+        }
+
+        function checkPracticeAnswer() {
+            const val = document.getElementById('practice-input').value.trim();
+            const fb = document.getElementById('practice-feedback');
+            fb.classList.remove('hidden');
+            if (val === "2" || val.toLowerCase() === "2 moles" || val === "දෙක") {
+                fb.className = "p-3 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200";
+                fb.innerText = currentLang === 'en' ? "✓ Correct! 2 product units are formed." : "✓ නිවැරදියි! ඵල ඒකක 2ක් සෑදේ.";
+            } else {
+                fb.className = "p-3 rounded-xl text-xs font-bold bg-rose-50 text-rose-800 border border-rose-200";
+                fb.innerText = currentLang === 'en' ? "✕ Incorrect. Try checking the hint!" : "✕ පිළිතුර වැරදියි. ඉඟිය බලන්න!";
+            }
+        }
+    </script>
+</body>
+</html>
